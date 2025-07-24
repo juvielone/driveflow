@@ -8,7 +8,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Users, CheckCircle, Car } from "lucide-react";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Calendar,
+  Clock,
+  Users,
+  CheckCircle,
+  Car,
+  MenuIcon,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -21,7 +34,9 @@ export default function DrivingInstructorLanding() {
           <Car className="h-8 w-8 text-orange-600" />
           <span className="ml-2 text-xl font-bold">DriveFlow</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+
+        {/* Desktop Navigation */}
+        <nav className="hidden ml-auto lg:flex gap-4 sm:gap-6">
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
             href="#features"
@@ -46,12 +61,83 @@ export default function DrivingInstructorLanding() {
           >
             Contact
           </Link>
+          <Link
+            className="text-sm font-medium hover:underline underline-offset-4"
+            href="/login"
+          >
+            Login
+          </Link>
+          <Button
+            asChild
+            size="sm"
+            className="bg-orange-600 hover:bg-orange-700"
+          >
+            <Link href="/register">Get Started</Link>
+          </Button>
         </nav>
+
+        {/* Mobile Navigation */}
+        <div className="ml-auto lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <MenuIcon className="h-6 w-6" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetTitle>
+                <div className="flex items-center mb-6">
+                  <Car className="h-6 w-6 text-orange-600" />
+                  <span className="ml-2 text-lg font-bold">DriveFlow</span>
+                </div>
+              </SheetTitle>
+              <div className="grid gap-4 py-6">
+                <Link
+                  href="#features"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:text-orange-600 transition-colors"
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:text-orange-600 transition-colors"
+                >
+                  How It Works
+                </Link>
+                <Link
+                  href="#pricing"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:text-orange-600 transition-colors"
+                >
+                  Pricing
+                </Link>
+                <Link
+                  href="#contact"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:text-orange-600 transition-colors"
+                >
+                  Contact
+                </Link>
+                <Link
+                  href="/login"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:text-orange-600 transition-colors"
+                >
+                  Login
+                </Link>
+                <Button
+                  asChild
+                  className="bg-orange-600 hover:bg-orange-700 mt-4"
+                >
+                  <Link href="/register">Get Started</Link>
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </header>
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-br from-orange-50 to-amber-50">
+        <section className="w-full py-12 md:py-24 lg:py-28 xl:py-14 bg-gradient-to-br from-orange-50 to-amber-50">
           <div className="container px-4 md:px-6 m-auto">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
@@ -90,13 +176,23 @@ export default function DrivingInstructorLanding() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-center">
+              <div className="relative flex items-center justify-center group pt-10">
                 <Image
                   alt="Driving instructor dashboard"
-                  className="aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
-                  height="400"
-                  src="/placeholder.svg?height=400&width=600"
-                  width="600"
+                  className="mx-auto my-auto translate-x-20 -translate-y-8 lg:translate-x-16 lg:-translate-y-20 w-40
+                  inset-0 scale-90 z-0 lg:absolute lg:transition-all duration-300 lg:w-1/2 lg:group-hover:translate-x-0 lg:group-hover:-translate-y-0"
+                  height="300"
+                  src="/learner-plate.png"
+                  width="300"
+                />
+
+                <Image
+                  alt="Driving instructor dashboard"
+                  className="mx-auto my-auto -translate-x-10 lg:-translate-x-1 lg:-translate-y-1 w-40
+                  inset-0 z-10 lg:transition-all duration-300 lg:w-1/2 lg:absolute lg:group-hover:-translate-x-0 lg:group-hover:-translate-y-0"
+                  height="300"
+                  src="/learner-plate.png"
+                  width="300"
                 />
               </div>
             </div>
