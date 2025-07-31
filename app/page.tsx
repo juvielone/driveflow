@@ -36,44 +36,43 @@ export default function DrivingInstructorLanding() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden ml-auto lg:flex gap-4 sm:gap-6">
+        <nav className="hidden ml-auto  lg:flex gap-4 sm:gap-6">
           <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm my-auto font-medium hover:underline underline-offset-4"
             href="#features"
           >
             Features
           </Link>
+        
           <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="#how-it-works"
-          >
-            How It Works
-          </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm my-auto font-medium hover:underline underline-offset-4"
             href="#pricing"
           >
             Pricing
           </Link>
           <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
+            className="text-sm my-auto font-medium hover:underline underline-offset-4"
             href="#contact"
           >
             Contact
           </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="/login"
+
+          <Button
+            asChild
+            size="sm"
+            className="outline outline-1 outline-orange-600
+            bg-transparent text-orange-600 hover:bg-orange-600 hover:text-white"
           >
-            Login
-          </Link>
+            <Link href="/login">Login</Link>
+          </Button>
           <Button
             asChild
             size="sm"
             className="bg-orange-600 hover:bg-orange-700"
           >
-            <Link href="/register">Get Started</Link>
+            <Link href="/register">Try Free</Link>
           </Button>
+
         </nav>
 
         {/* Mobile Navigation */}
@@ -139,13 +138,16 @@ export default function DrivingInstructorLanding() {
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-28 xl:py-14 bg-gradient-to-br from-orange-50 to-amber-50">
           <div className="container px-4 md:px-6 m-auto">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-1 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
-                  <Badge variant="secondary" className="w-fit">
+                  <Badge
+                    variant="outline"
+                    className="w-fit bg-white text-black"
+                  >
                     For Driving Instructors
                   </Badge>
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  <h1 className="text-3xl font-bold tracking-tight sm:text-5xl xl:text-6xl/none">
                     Streamline Your Driving Lessons with Smart Scheduling
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
@@ -204,17 +206,18 @@ export default function DrivingInstructorLanding() {
           <div className="container px-4 m-auto md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  Everything You Need to Manage Your Driving School
+                <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+                  {/*  Everything You Need to Manage Your Driving School  */}
+                  Less Stress. More Teaching. Happier Students
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] mx-auto  text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Powerful features designed to save you time and help you focus
                   on what matters most - teaching safe driving.
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-start gap-6 py-12 lg:grid-cols-3 lg:gap-12">
-              <Card>
+            <div className="mx-auto grid max-w-5xl items-stretch gap-6 py-12 lg:grid-cols-3 lg:gap-12">
+              <Card className="flex flex-col h-full hover:bg-slate-50 transition-all duration-300">
                 <CardHeader>
                   <Calendar className="h-10 w-10 text-orange-600" />
                   <CardTitle>Smart Scheduling</CardTitle>
@@ -223,7 +226,7 @@ export default function DrivingInstructorLanding() {
                     prevents double bookings.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
@@ -240,16 +243,17 @@ export default function DrivingInstructorLanding() {
                   </ul>
                 </CardContent>
               </Card>
-              <Card>
+
+              <Card className="flex flex-col h-full hover:bg-slate-50 transition-all duration-300">
                 <CardHeader>
                   <Clock className="h-10 w-10 text-orange-600" />
-                  <CardTitle>Cancellation Management</CardTitle>
+                  <CardTitle>Cancellation</CardTitle>
                   <CardDescription>
                     Handle cancellations and rescheduling with automated
                     notifications and policies.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
@@ -266,7 +270,8 @@ export default function DrivingInstructorLanding() {
                   </ul>
                 </CardContent>
               </Card>
-              <Card>
+
+              <Card className="flex flex-col h-full hover:bg-slate-50 transition-all duration-300">
                 <CardHeader>
                   <Users className="h-10 w-10 text-orange-600" />
                   <CardTitle>Student Management</CardTitle>
@@ -275,7 +280,7 @@ export default function DrivingInstructorLanding() {
                     important notes in one place.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
@@ -301,7 +306,10 @@ export default function DrivingInstructorLanding() {
           <div className="container m-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-4">
-                <Badge variant="secondary">For Instructors</Badge>
+                <Badge variant="outline" className="w-fit bg-white text-black">
+                  For Instructors
+                </Badge>
+                {/* <Badge variant="secondary">For Instructors</Badge> */}
                 <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
                   Save Time, Reduce No-Shows, Increase Revenue
                 </h3>
@@ -330,7 +338,9 @@ export default function DrivingInstructorLanding() {
                 </ul>
               </div>
               <div className="space-y-4">
-                <Badge variant="secondary">For Students</Badge>
+                <Badge variant="outline" className="w-fit bg-white text-black">
+                  For Students
+                </Badge>
                 <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl">
                   Book Lessons Anytime, Anywhere
                 </h3>
