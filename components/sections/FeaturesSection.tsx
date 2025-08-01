@@ -22,7 +22,7 @@ export default function FeaturesSectionX() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid max-w-5xl items-stretch gap-6  lg:grid-cols-3 lg:gap-12">
+        <div className="mx-auto grid max-w-5xl items-stretch gap-6 pt-14 lg:grid-cols-3 lg:gap-12">
           <Card className="flex flex-col h-full bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">     
             <CardHeader>
               <Calendar className="h-10 w-10 text-orange-600" />
