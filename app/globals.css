@@ -22,12 +22,12 @@ body {
     --popover-foreground: 0 0% 3.9%;
     /* --primary: 0 0% 9%;
     --primary-foreground: 0 0% 98%; */
-     /* Primary - Your orange brand color #EA580C */
-     --primary: 20 90% 48%;                     
-     --primary-foreground: 0 0% 100%;
-  /* Secondary - Your cream color #FFF8EC */
-  --secondary: 38 100% 96%;                  
-  --secondary-foreground: 20 90% 48%;      
+    /* Primary - Your orange brand color #EA580C */
+    --primary: 20 90% 48%;
+    --primary-foreground: 0 0% 100%;
+    /* Secondary - Your cream color #FFF8EC */
+    --secondary: 38 100% 96%;
+    --secondary-foreground: 20 90% 48%;
     /* --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%; */
     --muted: 0 0% 96.1%;

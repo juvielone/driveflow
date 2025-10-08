@@ -5,15 +5,12 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-28 xl:py-14 bg-gradient-to-br from-orange-50 to-amber-50">
+    <section className="w-full h-fit py-12 md:py-24 lg:py-28 xl:py-14 bg-gradient-to-br from-orange-50 to-amber-50">
       <div className="container px-4 md:px-6 m-auto">
         <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-1 xl:grid-cols-[1fr_600px]">
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
-              <Badge
-                variant="outline"
-                className="w-fit bg-white text-black"
-              >
+              <Badge variant="outline" className="w-fit bg-white text-black">
                 For Driving Instructors
               </Badge>
               <h1 className="text-3xl font-bold tracking-tight sm:text-5xl xl:text-6xl/none">
@@ -21,15 +18,12 @@ export default function HeroSection() {
               </h1>
               <p className="max-w-[600px] text-muted-foreground md:text-xl">
                 Manage your availability, handle bookings, and reduce
-                cancellations with our all-in-one platform designed
-                specifically for driving instructors and their students.
+                cancellations with our all-in-one platform designed specifically
+                for driving instructors and their students.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Button
-                size="lg"
-                className="bg-orange-600 hover:bg-orange-700"
-              >
+              <Button size="lg" className="bg-orange-600 hover:bg-orange-700">
                 Start Free Trial
               </Button>
               <Button variant="outline" size="lg">
@@ -70,4 +64,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-} 
+}
