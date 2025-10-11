@@ -5,12 +5,19 @@ import BenefitsSection from "@/components/sections/BenefitsSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
+import { createClient } from "@supabase/supabase-js";
+import { Auth } from "@supabase/auth-ui-react";
 //import Samp from "@/components/sections/samp";
 
 export default function DrivingInstructorLanding() {
+  // const supabase = createClient(
+  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  // );
   return (
     <div className="flex flex-col min-h-screen">
       <MainHeader />
+      {/* <Auth supabaseClient={supabase} /> */}
       <main className="flex-1">
         <HeroSection />
         <FeaturesSection />

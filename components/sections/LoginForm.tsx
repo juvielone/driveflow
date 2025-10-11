@@ -9,12 +9,64 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye, EyeOff } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    remember: false,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+    // Clear error when user starts typing
+    if (error) {
+      setError(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.email.trim() || !formData.password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const { error } = await login(formData.email, formData.password);
+
+      if (error) {
+        setError(error);
+      } else {
+        // Redirect to dashboard after successful login
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-md space-y-6">
@@ -38,7 +90,14 @@ export default function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form className="space-y-4">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
                 Email Address
@@ -47,6 +106,9 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                disabled={isSubmitting}
                 required
               />
             </div>
@@ -60,6 +122,9 @@ export default function LoginForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  disabled={isSubmitting}
                   required
                 />
                 <button
@@ -82,8 +147,14 @@ export default function LoginForm() {
                   type="checkbox"
                   id="remember"
                   className="rounded border-gray-300"
+                  checked={formData.remember}
+                  onChange={handleInputChange}
+                  disabled={isSubmitting}
                 />
-                <label htmlFor="remember" className="text-sm text-muted-foreground">
+                <label
+                  htmlFor="remember"
+                  className="text-sm text-muted-foreground"
+                >
                   Remember me
                 </label>
               </div>
@@ -98,8 +169,9 @@ export default function LoginForm() {
             <Button
               type="submit"
               className="w-full bg-orange-600 hover:bg-orange-700"
+              disabled={isSubmitting}
             >
-              Sign In
+              {isSubmitting ? "Signing In..." : "Sign In"}
             </Button>
           </form>
 
@@ -137,8 +209,12 @@ export default function LoginForm() {
               Google
             </Button>
             <Button variant="outline" className="w-full">
-              <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+              <svg
+                className="mr-2 h-4 w-4"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
               </svg>
               Twitter
             </Button>
@@ -147,7 +223,10 @@ export default function LoginForm() {
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/register" className="text-orange-600 hover:underline">
+              <Link
+                href="/register"
+                className="text-orange-600 hover:underline"
+              >
                 Sign up
               </Link>
             </p>
@@ -156,4 +235,4 @@ export default function LoginForm() {
       </Card>
     </div>
   );
-} 
+}

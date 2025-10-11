@@ -9,13 +9,150 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Users, CheckCircle, Car, Eye, EyeOff } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Calendar,
+  Clock,
+  Users,
+  CheckCircle,
+  Car,
+  Eye,
+  EyeOff,
+  AlertCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    drivingSchool: "",
+    license: "",
+    terms: false,
+  });
+  const [errors, setErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const { register } = useAuth();
+  const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+    // Clear errors when user starts typing
+    if (errors.length > 0) {
+      setErrors([]);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: string[] = [];
+
+    if (!formData.firstName.trim()) {
+      newErrors.push("First name is required");
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.push("Last name is required");
+    }
+    if (!formData.email.trim()) {
+      newErrors.push("Email is required");
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.push("Please enter a valid email address");
+    }
+    if (!formData.phone.trim()) {
+      newErrors.push("Phone number is required");
+    }
+    if (!formData.password) {
+      newErrors.push("Password is required");
+    } else if (formData.password.length < 6) {
+      newErrors.push("Password must be at least 6 characters long");
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.push("Passwords do not match");
+    }
+    if (!formData.drivingSchool.trim()) {
+      newErrors.push("Driving school name is required");
+    }
+    if (!formData.license.trim()) {
+      newErrors.push("License number is required");
+    }
+    if (!formData.terms) {
+      newErrors.push("You must agree to the terms and conditions");
+    }
+
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrors([]);
+
+    try {
+      console.log("🔄 Registration form submitting...");
+
+      // Add timeout to prevent infinite hanging
+      const registrationPromise = register({
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        drivingSchool: formData.drivingSchool,
+        licenseNumber: formData.license,
+      });
+
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(
+          () => reject(new Error("Registration timeout - please try again")),
+          30000
+        ); // 30 second timeout
+      });
+
+      const result = await Promise.race([registrationPromise, timeoutPromise]);
+      const { error } = result as any;
+
+      if (error) {
+        console.error("Registration failed with error:", error);
+        setErrors([error]);
+      } else {
+        console.log("Registration successful!");
+        setSuccess(true);
+        // Redirect to dashboard after successful registration
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Registration exception:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred. Please try again.";
+      setErrors([errorMessage]);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -46,7 +183,8 @@ export default function RegisterPage() {
                 Create Your Account
               </h1>
               <p className="text-muted-foreground">
-                Start managing your driving school with our powerful scheduling platform
+                Start managing your driving school with our powerful scheduling
+                platform
               </p>
             </div>
 
@@ -58,15 +196,43 @@ export default function RegisterPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <form className="space-y-4">
+                {success && (
+                  <Alert className="border-green-200 bg-green-50">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-green-800">
+                      Account created successfully! Redirecting to dashboard...
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {errors.length > 0 && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      <ul className="list-disc list-inside space-y-1">
+                        {errors.map((error, index) => (
+                          <li key={index}>{error}</li>
+                        ))}
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor="firstName" className="text-sm font-medium">
+                      <label
+                        htmlFor="firstName"
+                        className="text-sm font-medium"
+                      >
                         First Name
                       </label>
                       <Input
                         id="firstName"
                         placeholder="John"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
                         required
                       />
                     </div>
@@ -77,6 +243,9 @@ export default function RegisterPage() {
                       <Input
                         id="lastName"
                         placeholder="Doe"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
                         required
                       />
                     </div>
@@ -90,6 +259,9 @@ export default function RegisterPage() {
                       id="email"
                       type="email"
                       placeholder="john@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -102,6 +274,9 @@ export default function RegisterPage() {
                       id="phone"
                       type="tel"
                       placeholder="+1 (555) 123-4567"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -115,6 +290,9 @@ export default function RegisterPage() {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Create a strong password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
                         required
                       />
                       <button
@@ -132,7 +310,10 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="text-sm font-medium">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="text-sm font-medium"
+                    >
                       Confirm Password
                     </label>
                     <div className="relative">
@@ -140,11 +321,16 @@ export default function RegisterPage() {
                         id="confirmPassword"
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
                         required
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       >
                         {showConfirmPassword ? (
@@ -157,12 +343,18 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="drivingSchool" className="text-sm font-medium">
+                    <label
+                      htmlFor="drivingSchool"
+                      className="text-sm font-medium"
+                    >
                       Driving School Name
                     </label>
                     <Input
                       id="drivingSchool"
                       placeholder="Your Driving School"
+                      value={formData.drivingSchool}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -174,6 +366,9 @@ export default function RegisterPage() {
                     <Input
                       id="license"
                       placeholder="Enter your license number"
+                      value={formData.license}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
@@ -183,15 +378,27 @@ export default function RegisterPage() {
                       type="checkbox"
                       id="terms"
                       className="rounded border-gray-300"
+                      checked={formData.terms}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                       required
                     />
-                    <label htmlFor="terms" className="text-sm text-muted-foreground">
+                    <label
+                      htmlFor="terms"
+                      className="text-sm text-muted-foreground"
+                    >
                       I agree to the{" "}
-                      <Link href="#" className="text-orange-600 hover:underline">
+                      <Link
+                        href="#"
+                        className="text-orange-600 hover:underline"
+                      >
                         Terms of Service
                       </Link>{" "}
                       and{" "}
-                      <Link href="#" className="text-orange-600 hover:underline">
+                      <Link
+                        href="#"
+                        className="text-orange-600 hover:underline"
+                      >
                         Privacy Policy
                       </Link>
                     </label>
@@ -200,15 +407,19 @@ export default function RegisterPage() {
                   <Button
                     type="submit"
                     className="w-full bg-orange-600 hover:bg-orange-700"
+                    disabled={isSubmitting}
                   >
-                    Create Account
+                    {isSubmitting ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
 
                 <div className="text-center space-y-2">
                   <p className="text-sm text-muted-foreground">
                     Already have an account?{" "}
-                    <Link href="/login" className="text-orange-600 hover:underline">
+                    <Link
+                      href="/login"
+                      className="text-orange-600 hover:underline"
+                    >
                       Sign in
                     </Link>
                   </p>
@@ -218,7 +429,9 @@ export default function RegisterPage() {
 
             {/* Benefits */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-center">Why Choose DriveFlow?</h3>
+              <h3 className="text-lg font-semibold text-center">
+                Why Choose DriveFlow?
+              </h3>
               <div className="grid gap-3">
                 <div className="flex items-center gap-3 text-sm">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -265,4 +478,4 @@ export default function RegisterPage() {
       </footer>
     </div>
   );
-} 
+}
